@@ -1,0 +1,24 @@
+@* Botões de ação sobre um agendamento. Recebe uma tupla (agendamento, tela de retorno, data). *@
+@model (AgendamentoDto Ag, string Voltar, string Data)
+
+<div class="d-inline-flex flex-wrap gap-1 justify-content-center botoes-acoes">
+    @if (Model.Ag.Status == "Pendente")
+    {
+        <form asp-controller="Admin" asp-action="Confirmar" asp-route-id="@Model.Ag.Id" asp-route-voltar="@Model.Voltar" asp-route-data="@Model.Data" method="post" class="m-0">
+            <button type="submit" class="btn btn-sm btn-rosa">Confirmar</button>
+        </form>
+    }
+    @if (Model.Ag.Status == "Confirmado")
+    {
+        <form asp-controller="Admin" asp-action="Concluir" asp-route-id="@Model.Ag.Id" asp-route-voltar="@Model.Voltar" asp-route-data="@Model.Data" method="post" class="m-0">
+            <button type="submit" class="btn btn-sm btn-rosa">Concluir</button>
+        </form>
+    }
+    @if (Model.Ag.Status is "Pendente" or "Confirmado")
+    {
+        <form asp-controller="Admin" asp-action="Cancelar" asp-route-id="@Model.Ag.Id" asp-route-voltar="@Model.Voltar" asp-route-data="@Model.Data" method="post" class="m-0"
+              onsubmit="return confirm('Cancelar este agendamento?');">
+            <button type="submit" class="btn btn-sm btn-outline-rosa">Cancelar</button>
+        </form>
+    }
+</div>

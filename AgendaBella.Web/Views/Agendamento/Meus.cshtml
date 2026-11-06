@@ -1,0 +1,68 @@
+@model MeusAgendamentosViewModel
+@{
+    ViewData["Title"] = "Meus agendamentos";
+}
+
+<div class="container-agendamentos">
+    <div class="text-center mb-4">
+        <h1 class="titulo-pagina h2">Meus agendamentos</h1>
+        <p class="texto-pagina">
+            Você tem <strong>@Model.Saldo ponto(s)</strong> de fidelidade.
+            <a asp-controller="Perfil" asp-action="Pontos">Ver extrato</a>
+        </p>
+        <a asp-action="Index" class="btn btn-rosa">Novo agendamento</a>
+    </div>
+
+    @if (Model.Agendamentos.Count == 0)
+    {
+        <p class="text-center text-muted">Você ainda não tem agendamentos.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var a in Model.Agendamentos)
+            {
+                var classe = Formatos.ClasseStatus(a.Status);
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <article class="card-meu-agendamento h-100">
+                        <div class="status-topo status-@classe"></div>
+                        <div class="conteudo-agendamento">
+                            <h2 class="h5">@a.ServicoNome</h2>
+                            <p class="mb-1"><i class="fa-solid fa-calendar" aria-hidden="true"></i> <strong>Data:</strong> @Formatos.Data(a.Data)</p>
+                            <p class="mb-1"><i class="fa-regular fa-clock" aria-hidden="true"></i> <strong>Horário:</strong> @a.Horario</p>
+                            <p class="mb-2"><i class="fa-solid fa-tag" aria-hidden="true"></i> @Formatos.Moeda(a.Preco) • @a.Duracao min</p>
+
+                            <span class="badge-status @classe">@Formatos.TextoStatus(a.Status)</span>
+
+                            @if (!string.IsNullOrEmpty(a.Observacao))
+                            {
+                                <p class="mt-3 mb-1 small"><strong>Observação:</strong> @a.Observacao</p>
+                            }
+                            @if (!string.IsNullOrEmpty(a.ImagemInspiracao))
+                            {
+                                <a href="~/uploads/@a.ImagemInspiracao" target="_blank" rel="noopener">
+                                    <img class="thumb-inspiracao mt-2" src="~/uploads/@a.ImagemInspiracao" alt="Foto de inspiração enviada para @a.ServicoNome" />
+                                </a>
+                            }
+
+                            <div class="d-flex flex-wrap gap-2 mt-3 botoes-acoes">
+                                @if (a.PodeReagendar)
+                                {
+                                    <a asp-action="Reagendar" asp-route-id="@a.Id" class="btn btn-rosa btn-sm">Reagendar</a>
+                                }
+                                @if (a.PodeCancelar)
+                                {
+                                    <form asp-action="Cancelar" asp-route-id="@a.Id" method="post" class="m-0"
+                                          onsubmit="return confirm('Cancelar este agendamento?');">
+                                        <button type="submit" class="btn btn-outline-rosa btn-sm">Cancelar</button>
+                                    </form>
+                                }
+                                <a asp-action="Historico" asp-route-id="@a.Id" class="btn btn-link btn-sm">Histórico</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+</div>

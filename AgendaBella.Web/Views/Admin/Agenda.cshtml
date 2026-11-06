@@ -1,0 +1,61 @@
+@model AgendaDiariaViewModel
+@{
+    ViewData["Title"] = "Agenda do dia";
+    var dataIso = Model.Data.ToString("yyyy-MM-dd");
+}
+
+<div class="titulo-pagina mb-3">
+    <h1 class="h2"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Agenda do dia</h1>
+    <p>@Formatos.DataLonga(Model.Data)</p>
+</div>
+
+<form asp-action="Agenda" method="get" class="d-flex flex-wrap align-items-end gap-2 mb-4">
+    <div>
+        <label for="data" class="form-label mb-1">Escolher outro dia</label>
+        <input id="data" name="data" type="date" value="@dataIso" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-rosa">Ver agenda</button>
+    <a asp-action="Agenda" class="btn btn-link">Hoje</a>
+</form>
+
+@if (Model.Itens.Count == 0)
+{
+    <p class="text-muted">Nenhum agendamento neste dia.</p>
+}
+else
+{
+    <div class="card-agenda">
+        @foreach (var item in Model.Itens)
+        {
+            var a = item.Agendamento;
+            var classe = Formatos.ClasseStatus(a.Status);
+            <div class="agenda-item">
+                <div class="hora">@a.Horario</div>
+                <div class="agendamento @classe">
+                    <h2 class="h5">@a.ClienteNome <small class="text-muted">@a.ClienteTelefone</small></h2>
+                    <p class="mb-1">@a.ServicoNome • @a.Duracao min • @Formatos.Moeda(a.Preco)</p>
+                    <span class="badge-status @classe">@Formatos.TextoStatus(a.Status)</span>
+
+                    @if (!string.IsNullOrEmpty(a.Observacao))
+                    {
+                        <p class="detalhes mt-2 mb-1"><strong>Observação:</strong> @a.Observacao</p>
+                    }
+                    @if (item.Preferencia is { } p && (p.FormatoUnha != null || p.CorFavorita != null || p.Estilo != null || p.Observacao != null))
+                    {
+                        <p class="detalhes mb-1">
+                            <strong>Preferências:</strong>
+                            @string.Join(" • ", new[] { p.FormatoUnha, p.CorFavorita, p.Estilo, p.Observacao }.Where(x => !string.IsNullOrWhiteSpace(x)))
+                        </p>
+                    }
+                    @if (!string.IsNullOrEmpty(a.ImagemInspiracao))
+                    {
+                        <a href="~/uploads/@a.ImagemInspiracao" target="_blank" rel="noopener">
+                            <img class="thumb-inspiracao mt-1" src="~/uploads/@a.ImagemInspiracao" alt="Foto de inspiração de @a.ClienteNome" />
+                        </a>
+                    }
+                    <div class="mt-2">@await Html.PartialAsync("_BotoesAgendamento", (a, "Agenda", dataIso))</div>
+                </div>
+            </div>
+        }
+    </div>
+}

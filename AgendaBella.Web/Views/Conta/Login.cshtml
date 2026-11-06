@@ -1,0 +1,85 @@
+@model LoginPaginaViewModel
+@{
+    ViewData["Title"] = "Entrar";
+    var cadastro = Model.AbrirCadastro;
+}
+
+<div class="container container-login-mobile container-formulario d-flex justify-content-center">
+    <div class="card-login">
+        <h1 class="h3 text-center mb-4">Área do cliente</h1>
+
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @(cadastro ? "" : "active")" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="@(cadastro ? "false" : "true")">
+                    <i class="fa-solid fa-circle-user" aria-hidden="true"></i> Entrar
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @(cadastro ? "active" : "")" id="cadastro-tab" data-bs-toggle="tab" data-bs-target="#cadastro" type="button" role="tab" aria-controls="cadastro" aria-selected="@(cadastro ? "true" : "false")">
+                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Cadastrar
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade @(cadastro ? "" : "show active")" id="login" role="tabpanel">
+                <form asp-action="Login" method="post">
+                    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                    @if (!cadastro)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center" role="alert"></div>
+                    }
+                    <div class="mb-3">
+                        <label asp-for="Login.Email" class="form-label"></label>
+                        <input asp-for="Login.Email" class="form-control" autocomplete="email" />
+                        <span asp-validation-for="Login.Email" class="form-text-erro"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Login.Senha" class="form-label"></label>
+                        <input asp-for="Login.Senha" type="password" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="Login.Senha" class="form-text-erro"></span>
+                    </div>
+                    <button type="submit" class="btn btn-rosa w-100">Entrar</button>
+                    <div class="text-center mt-3">
+                        <a asp-action="EsqueciASenha"><i class="fa-solid fa-key" aria-hidden="true"></i> Esqueci minha senha</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade @(cadastro ? "show active" : "")" id="cadastro" role="tabpanel">
+                <form asp-action="Cadastro" method="post">
+                    @if (cadastro)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center" role="alert"></div>
+                    }
+                    <div class="mb-3">
+                        <label asp-for="Cadastro.Nome" class="form-label"></label>
+                        <input asp-for="Cadastro.Nome" class="form-control" autocomplete="name" />
+                        <span asp-validation-for="Cadastro.Nome" class="form-text-erro"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Cadastro.Email" class="form-label"></label>
+                        <input asp-for="Cadastro.Email" class="form-control" autocomplete="email" />
+                        <span asp-validation-for="Cadastro.Email" class="form-text-erro"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Cadastro.Senha" class="form-label"></label>
+                        <input asp-for="Cadastro.Senha" type="password" class="form-control" autocomplete="new-password" aria-describedby="dica-senha" />
+                        <div id="dica-senha" class="form-text">Mínimo de 6 caracteres.</div>
+                        <span asp-validation-for="Cadastro.Senha" class="form-text-erro"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Cadastro.Telefone" class="form-label"></label>
+                        <input asp-for="Cadastro.Telefone" type="tel" class="form-control" autocomplete="tel" placeholder="(16) 99999-9999" />
+                        <span asp-validation-for="Cadastro.Telefone" class="form-text-erro"></span>
+                    </div>
+                    <button type="submit" class="btn btn-rosa w-100">Criar conta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

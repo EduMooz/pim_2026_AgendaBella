@@ -1,0 +1,84 @@
+@model ListaEsperaViewModel
+@{
+    ViewData["Title"] = "Lista de espera";
+    var dataAtual = Model.Dados.DataDesejada == default ? "" : Model.Dados.DataDesejada.ToString("yyyy-MM-dd");
+}
+
+<div class="container" style="max-width:820px">
+    <h1 class="h3 mb-2">Lista de espera</h1>
+    <p class="mb-4">O dia que você quer está lotado? Entre na fila: quando surgir uma vaga, mostramos o aviso aqui e no aplicativo.</p>
+
+    <div class="bloco-form mb-4">
+        <form asp-action="Entrar" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label asp-for="Dados.IdServico" class="form-label"></label>
+                    <select asp-for="Dados.IdServico" class="form-select" required>
+                        <option value="">Selecione</option>
+                        @foreach (var s in Model.Servicos)
+                        {
+                            <option value="@s.Id" selected="@(s.Id == Model.Dados.IdServico)">@s.Nome</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Dados.IdServico" class="form-text-erro"></span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="Dados.DataDesejada" class="form-label"></label>
+                    <input asp-for="Dados.DataDesejada" type="date" value="@dataAtual" min="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" required />
+                    <span asp-validation-for="Dados.DataDesejada" class="form-text-erro"></span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="Dados.HorarioDesejado" class="form-label"></label>
+                    <input asp-for="Dados.HorarioDesejado" type="time" class="form-control" aria-describedby="dica-hora" />
+                    <div id="dica-hora" class="form-text">Vazio = qualquer horário.</div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-rosa mt-3">Entrar na lista</button>
+        </form>
+    </div>
+
+    <h2 class="h5">Minhas solicitações</h2>
+    @if (Model.Minhas.Count == 0)
+    {
+        <p class="text-muted">Você não está em nenhuma lista de espera.</p>
+    }
+    else
+    {
+        <div class="card-tabela">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <caption class="visually-hidden">Minhas solicitações na lista de espera</caption>
+                    <thead>
+                        <tr><th scope="col">Serviço</th><th scope="col">Data</th><th scope="col">Horário</th><th scope="col">Situação</th><th scope="col"><span class="visually-hidden">Ações</span></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var l in Model.Minhas)
+                        {
+                            <tr>
+                                <td>@l.ServicoNome</td>
+                                <td>@Formatos.Data(l.DataDesejada)</td>
+                                <td>@(l.HorarioDesejado ?? "Qualquer")</td>
+                                <td>
+                                    <span class="badge-status @Formatos.ClasseStatus(l.Status)">@(l.Status == "Notificado" ? "Vaga liberada!" : l.Status)</span>
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    @if (l.Status == "Notificado")
+                                    {
+                                        <a asp-controller="Agendamento" asp-action="Index" asp-route-servico="@l.IdServico" class="btn btn-rosa btn-sm">Agendar agora</a>
+                                    }
+                                    @if (l.Status is "Aguardando" or "Notificado")
+                                    {
+                                        <form asp-action="Sair" asp-route-id="@l.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-rosa btn-sm">Sair da fila</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

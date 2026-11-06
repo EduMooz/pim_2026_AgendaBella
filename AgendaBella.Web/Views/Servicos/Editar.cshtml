@@ -1,0 +1,18 @@
+@model ServicoSalvarDto
+@{
+    ViewData["Title"] = "Editar serviço";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card-login" style="max-width:560px">
+        <h1 class="h3 text-center mb-4">Editar serviço</h1>
+        @* O id vai na URL (/Servicos/Editar/3), não dentro do formulário *@
+        <form asp-action="Editar" asp-route-id="@ViewData["Id"]" method="post">
+            <partial name="_Formulario" model="Model" />
+            <div class="d-flex gap-2 botoes-acoes">
+                <button type="submit" class="btn btn-rosa w-100">Salvar</button>
+                <a asp-action="Index" class="btn btn-outline-rosa w-100">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+# Configuração do projeto Flutter (equivale ao .csproj do C#).
+name: agendabella_app
+description: "Aplicativo da cliente do Agenda Bella (PIM IV) - consome a AgendaBella.Api."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Traduções dos componentes prontos (calendário, botões "Cancelar"/"OK") para português.
+  flutter_localizations:
+    sdk: flutter
+  # Chamadas HTTP para a Api (GET, POST, PUT, PATCH, DELETE e envio de arquivo).
+  http: ^1.2.2
+  # Guarda o token do login no aparelho (a cliente não precisa entrar toda vez).
+  shared_preferences: ^2.3.2
+  # Escolher a foto de inspiração na galeria ou tirar com a câmera.
+  image_picker: ^1.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png

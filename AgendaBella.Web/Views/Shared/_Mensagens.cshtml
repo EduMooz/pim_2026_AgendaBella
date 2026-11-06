@@ -1,0 +1,9 @@
+@* Mostra as mensagens deixadas pelos controllers em TempData (sucesso e erro). *@
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert alert-success mensagens" role="status">@mensagem</div>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <div class="alert alert-danger mensagens" role="alert">@erro</div>
+}

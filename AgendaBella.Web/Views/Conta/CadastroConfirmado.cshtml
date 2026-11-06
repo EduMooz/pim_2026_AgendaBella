@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Cadastro confirmado";
+}
+
+<div class="container-confirmacao">
+    <div class="card-confirmacao text-center">
+        <h1 class="titulo-confirmacao h3 mb-3">Cadastro confirmado!</h1>
+        <p class="mb-4">Seu cadastro foi realizado com sucesso.</p>
+        <div class="d-flex flex-column gap-3">
+            <a asp-action="Login" class="btn btn-rosa">Entrar na minha conta</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-rosa">Ir para o início</a>
+        </div>
+    </div>
+</div>

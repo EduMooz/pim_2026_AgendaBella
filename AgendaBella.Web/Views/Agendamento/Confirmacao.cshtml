@@ -1,0 +1,18 @@
+@model AgendamentoDto
+@{
+    ViewData["Title"] = "Agendamento realizado";
+}
+
+<div class="container-confirmacao">
+    <div class="card-confirmacao text-center">
+        <h1 class="titulo-confirmacao h3 mb-3">Agendamento realizado!</h1>
+        <p class="mb-1"><strong>@Model.ServicoNome</strong></p>
+        <p class="mb-3">@Formatos.Data(Model.Data) às @Model.Horario</p>
+        <p class="mb-4">Ele fica <strong>pendente</strong> até a confirmação da profissional.</p>
+
+        <div class="d-flex flex-column gap-3 botoes-acoes">
+            <a asp-action="Meus" class="btn btn-rosa">Ver meus agendamentos</a>
+            <a asp-action="Index" class="btn btn-outline-rosa">Novo agendamento</a>
+        </div>
+    </div>
+</div>

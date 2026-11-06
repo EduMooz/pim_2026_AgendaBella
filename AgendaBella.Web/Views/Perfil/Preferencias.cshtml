@@ -1,0 +1,36 @@
+@model PreferenciaDto
+@{
+    ViewData["Title"] = "Minhas preferências";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card-login" style="max-width:560px">
+        <h1 class="h3 text-center mb-2">Minhas preferências</h1>
+        <p class="text-center mb-4">A Erika vê estas informações na sua agenda e prepara o atendimento do seu jeito.</p>
+
+        <form asp-action="Preferencias" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="mb-3">
+                <label asp-for="FormatoUnha" class="form-label"></label>
+                <input asp-for="FormatoUnha" class="form-control" placeholder="Ex.: amendoada, quadrada, redonda" />
+                <span asp-validation-for="FormatoUnha" class="form-text-erro"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="CorFavorita" class="form-label"></label>
+                <input asp-for="CorFavorita" class="form-control" />
+                <span asp-validation-for="CorFavorita" class="form-text-erro"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Estilo" class="form-label"></label>
+                <input asp-for="Estilo" class="form-control" placeholder="Ex.: minimalista, francesinha, decorado" />
+                <span asp-validation-for="Estilo" class="form-text-erro"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Observacao" class="form-label"></label>
+                <textarea asp-for="Observacao" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Observacao" class="form-text-erro"></span>
+            </div>
+            <button type="submit" class="btn btn-rosa w-100">Salvar preferências</button>
+        </form>
+    </div>
+</div>

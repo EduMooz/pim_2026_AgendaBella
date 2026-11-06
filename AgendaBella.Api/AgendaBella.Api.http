@@ -1,0 +1,94 @@
+# Arquivo de teste da API (alternativa à tela do Scalar, em /scalar).
+# Com a Api rodando, clique em "Enviar solicitação" (Visual Studio) ou
+# "Send Request" (VS Code com a extensão REST Client) em cima de cada chamada.
+# Rode NA ORDEM: o login guarda o token, que as chamadas seguintes reaproveitam.
+# Antes, crie o banco com os scripts 01 a 05 da pasta /Banco.
+
+@host = http://localhost:5218
+@amanha = 2026-10-20
+
+### 1) Catálogo de serviços (público, espera 200)
+GET {{host}}/api/servicos
+Accept: application/json
+
+### 2) Login da cliente de demonstração (espera 200 com o token)
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "cliente@agendabella.com.br",
+  "senha": "Cliente@123"
+}
+
+### 3) Login com senha errada (espera 401)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "cliente@agendabella.com.br",
+  "senha": "errada"
+}
+
+### 4) Quem sou eu (espera 200; sem token, 401)
+GET {{host}}/api/auth/eu
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 5) Horários livres - executa a STORED PROCEDURE sp_Horarios_Disponiveis (espera 200)
+# Troque a data em @amanha (no topo) por um dia útil futuro.
+GET {{host}}/api/agendamentos/horarios?data={{amanha}}&idServico=3
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 6) Criar agendamento (espera 201; use um horário que apareceu no passo 5)
+# @name novo
+POST {{host}}/api/agendamentos
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "idServico": 3,
+  "data": "{{amanha}}",
+  "horario": "14:00",
+  "observacao": "Quero francesinha com glitter"
+}
+
+### 7) Meus agendamentos (espera 200)
+GET {{host}}/api/agendamentos
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 8) Reagendar (espera 204; a TRIGGER grava o "Reagendamento" no histórico)
+PATCH {{host}}/api/agendamentos/{{novo.response.body.$.id}}/reagendar
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "data": "{{amanha}}",
+  "horario": "16:00"
+}
+
+### 9) Histórico do agendamento (espera 200, preenchido pelas triggers)
+GET {{host}}/api/agendamentos/{{novo.response.body.$.id}}/historico
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 10) Cancelar (espera 204; chamando de novo, 400)
+PATCH {{host}}/api/agendamentos/{{novo.response.body.$.id}}/cancelar
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 11) Lista de espera da cliente (espera 200)
+GET {{host}}/api/lista-espera
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 12) Preferências (espera 200)
+GET {{host}}/api/perfil/preferencias
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 13) Pontos de fidelidade (espera 200)
+GET {{host}}/api/perfil/pontos
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 14) Sem token (espera 401)
+GET {{host}}/api/agendamentos
+
+### 15) Documento OpenAPI gerado (espera 200)
+GET {{host}}/openapi/v1.json
+Accept: application/json

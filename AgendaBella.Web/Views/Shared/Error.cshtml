@@ -1,0 +1,16 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Erro";
+}
+
+<div class="container-confirmacao">
+    <div class="card-confirmacao text-center">
+        <h1 class="titulo-confirmacao h3 mb-3">Ops! Algo deu errado.</h1>
+        <p>Não foi possível concluir o que você pediu. Tente novamente em instantes.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p class="small text-muted">Código do erro: <code>@Model.RequestId</code></p>
+        }
+        <a asp-controller="Home" asp-action="Index" class="btn btn-rosa">Voltar ao início</a>
+    </div>
+</div>

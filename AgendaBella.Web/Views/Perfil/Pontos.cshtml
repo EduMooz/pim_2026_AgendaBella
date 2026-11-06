@@ -1,0 +1,41 @@
+@model SaldoPontosDto
+@{
+    ViewData["Title"] = "Meus pontos";
+}
+
+<div class="container" style="max-width:760px">
+    <h1 class="h3 mb-3">Programa de fidelidade</h1>
+
+    <div class="previsao mb-4">
+        <div class="numero">@Model.Saldo</div>
+        <div>ponto(s) disponíveis</div>
+        <p class="small mt-2 mb-0">Você ganha 1 ponto para cada R$ 1,00 em atendimentos concluídos. Fale com a Erika para resgatar.</p>
+    </div>
+
+    <h2 class="h5">Extrato</h2>
+    @if (Model.Extrato.Count == 0)
+    {
+        <p class="text-muted">Nenhuma movimentação ainda.</p>
+    }
+    else
+    {
+        <div class="card-tabela">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <caption class="visually-hidden">Extrato de pontos</caption>
+                    <thead><tr><th scope="col">Data</th><th scope="col">Descrição</th><th scope="col" class="text-end">Pontos</th></tr></thead>
+                    <tbody>
+                        @foreach (var m in Model.Extrato)
+                        {
+                            <tr>
+                                <td>@Formatos.DataHora(m.Data)</td>
+                                <td>@m.Descricao</td>
+                                <td class="text-end fw-semibold">@(m.Quantidade > 0 ? "+" : "")@m.Quantidade</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Agenda Bella</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-custom" aria-label="Menu principal">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/nails.png" class="logo-navbar" alt="" />
+                    Erika Santana
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+                        aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @if (User.IsInRole(Perfis.Profissional))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Painel</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Agenda">Agenda do dia</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Servicos" asp-action="Index">Serviços</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Horarios" asp-action="Index">Horários</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="ListaEspera">Lista de espera</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Clientes">Clientes</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Relatorios">Relatórios</a></li>
+                        }
+                        else if (User.IsInRole(Perfis.Cliente))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Agendamento" asp-action="Index">Agendar</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Agendamento" asp-action="Meus">Meus agendamentos</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="ListaEspera" asp-action="Index">Lista de espera</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Perfil" asp-action="Preferencias">Minhas preferências</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Perfil" asp-action="Pontos">Meus pontos</a></li>
+                        }
+                    </ul>
+
+                    <div class="d-flex align-items-center gap-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <span class="small text-dark">Olá, @User.Identity.Name</span>
+                            <form asp-controller="Conta" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="btn btn-outline-rosa btn-sm">
+                                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Sair
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-rosa" asp-controller="Conta" asp-action="Login">Entrar</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="conteudo" role="main" class="container pb-3">
+        <partial name="_Mensagens" />
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">&copy; 2026 - Agenda Bella</div>
+    </footer>
+
+    @* VLibras: tradutor gratuito do Governo Federal para a Língua Brasileira de Sinais (Etapa 8). *@
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

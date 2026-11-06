@@ -1,0 +1,43 @@
+@model RedefinirSenhaDto
+@{
+    ViewData["Title"] = "Redefinir senha";
+}
+
+<div class="container container-login-mobile container-formulario d-flex justify-content-center">
+    <div class="card-login">
+        <h1 class="h3 text-center mb-3">Redefinir senha</h1>
+        <p class="text-center mb-4">Informe seu e-mail e o telefone cadastrado para criar uma nova senha.</p>
+
+        <form asp-action="EsqueciASenha" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="email" />
+                <span asp-validation-for="Email" class="form-text-erro"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Telefone" class="form-label"></label>
+                <input asp-for="Telefone" type="tel" class="form-control" autocomplete="tel" />
+                <span asp-validation-for="Telefone" class="form-text-erro"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NovaSenha" class="form-label"></label>
+                <input asp-for="NovaSenha" type="password" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="NovaSenha" class="form-text-erro"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmarSenha" class="form-label"></label>
+                <input asp-for="ConfirmarSenha" type="password" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmarSenha" class="form-text-erro"></span>
+            </div>
+
+            <button type="submit" class="btn btn-rosa w-100">Redefinir senha</button>
+            <div class="text-center mt-3"><a asp-action="Login">Voltar para o login</a></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

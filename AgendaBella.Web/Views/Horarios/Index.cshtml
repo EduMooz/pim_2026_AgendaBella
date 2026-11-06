@@ -1,0 +1,122 @@
+@model HorariosAdminViewModel
+@{
+    ViewData["Title"] = "Horários";
+    var hoje = DateTime.Today.ToString("yyyy-MM-dd");
+    var dataBloqueio = Model.NovoBloqueio.Data == default ? hoje : Model.NovoBloqueio.Data.ToString("yyyy-MM-dd");
+}
+
+<h1 class="titulo-admin h2 mb-4"><i class="fa-regular fa-clock" aria-hidden="true"></i> Controle de horários</h1>
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<div class="row g-4">
+    <section class="col-12 col-xl-6" aria-labelledby="titulo-expediente">
+        <h2 id="titulo-expediente" class="subtitulo-admin h4 mb-3">Expediente semanal</h2>
+
+        <div class="card-tabela mb-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <caption class="visually-hidden">Expediente semanal</caption>
+                    <thead><tr><th scope="col">Dia</th><th scope="col">Horário</th><th scope="col" class="text-center">Ação</th></tr></thead>
+                    <tbody>
+                        @foreach (var h in Model.Horarios)
+                        {
+                            <tr>
+                                <td>@h.NomeDia</td>
+                                <td>@h.HoraInicio às @h.HoraFim</td>
+                                <td class="text-center">
+                                    <form asp-action="RemoverHorario" asp-route-id="@h.Id" method="post" class="m-0" onsubmit="return confirm('Remover esta faixa de horário?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-rosa"><i class="fa-solid fa-trash" aria-hidden="true"></i> Remover</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <form asp-action="AdicionarHorario" method="post" class="bloco-form">
+            <h3 class="h6 mb-3">Adicionar faixa de atendimento</h3>
+            <div class="row g-2">
+                <div class="col-12 col-md-4">
+                    <label asp-for="NovoHorario.DiaSemana" class="form-label"></label>
+                    <select asp-for="NovoHorario.DiaSemana" class="form-select">
+                        @for (var i = 1; i <= 7; i++)
+                        {
+                            <option value="@i" selected="@(i == Model.NovoHorario.DiaSemana)">@HorarioTrabalho.NomesDias[i]</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-4">
+                    <label asp-for="NovoHorario.HoraInicio" class="form-label"></label>
+                    <input asp-for="NovoHorario.HoraInicio" type="time" class="form-control" required />
+                </div>
+                <div class="col-6 col-md-4">
+                    <label asp-for="NovoHorario.HoraFim" class="form-label"></label>
+                    <input asp-for="NovoHorario.HoraFim" type="time" class="form-control" required />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-rosa mt-3">Adicionar</button>
+        </form>
+    </section>
+
+    <section class="col-12 col-xl-6" aria-labelledby="titulo-bloqueios">
+        <h2 id="titulo-bloqueios" class="subtitulo-admin h4 mb-3">Bloqueios de agenda</h2>
+
+        @if (Model.Bloqueios.Count == 0)
+        {
+            <p class="text-muted">Nenhum bloqueio futuro.</p>
+        }
+        else
+        {
+            <div class="card-tabela mb-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <caption class="visually-hidden">Bloqueios futuros</caption>
+                        <thead><tr><th scope="col">Data</th><th scope="col">Período</th><th scope="col">Motivo</th><th scope="col" class="text-center">Ação</th></tr></thead>
+                        <tbody>
+                            @foreach (var b in Model.Bloqueios)
+                            {
+                                <tr>
+                                    <td>@Formatos.Data(b.Data)</td>
+                                    <td>@(b.DiaInteiro ? "Dia inteiro" : $"{b.HoraInicio} às {b.HoraFim}")</td>
+                                    <td>@b.Motivo</td>
+                                    <td class="text-center">
+                                        <form asp-action="RemoverBloqueio" asp-route-id="@b.Id" method="post" class="m-0">
+                                            <button type="submit" class="btn btn-sm btn-outline-rosa">Liberar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <form asp-action="AdicionarBloqueio" method="post" class="bloco-form">
+            <h3 class="h6 mb-3">Bloquear um dia ou período</h3>
+            <div class="row g-2">
+                <div class="col-12 col-md-4">
+                    <label asp-for="NovoBloqueio.Data" class="form-label"></label>
+                    <input asp-for="NovoBloqueio.Data" type="date" value="@dataBloqueio" min="@hoje" class="form-control" required />
+                </div>
+                <div class="col-6 col-md-4">
+                    <label asp-for="NovoBloqueio.HoraInicio" class="form-label"></label>
+                    <input asp-for="NovoBloqueio.HoraInicio" type="time" class="form-control" />
+                </div>
+                <div class="col-6 col-md-4">
+                    <label asp-for="NovoBloqueio.HoraFim" class="form-label"></label>
+                    <input asp-for="NovoBloqueio.HoraFim" type="time" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="NovoBloqueio.Motivo" class="form-label"></label>
+                    <input asp-for="NovoBloqueio.Motivo" class="form-control" placeholder="Ex.: feriado, curso, consulta" />
+                </div>
+            </div>
+            <div class="form-text mt-2">Deixe início e fim vazios para bloquear o dia inteiro.</div>
+            <button type="submit" class="btn btn-rosa mt-3">Bloquear</button>
+        </form>
+    </section>
+</div>

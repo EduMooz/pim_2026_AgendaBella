@@ -1,0 +1,46 @@
+@model ReagendarViewModel
+@{
+    ViewData["Title"] = "Reagendar";
+    var a = Model.Agendamento;
+    var dataAtual = Model.Dados.Data == default ? "" : Model.Dados.Data.ToString("yyyy-MM-dd");
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card-agendamento">
+        <h1 class="h3 text-center mb-3">Reagendar</h1>
+        <p class="text-center mb-4">
+            <strong>@a.ServicoNome</strong><br />
+            Atualmente: @Formatos.Data(a.Data) às @a.Horario
+        </p>
+
+        <form asp-action="Reagendar" asp-route-id="@a.Id" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            @* O serviço não muda: vai num campo escondido para o JavaScript consultar os horários. *@
+            <input type="hidden" id="servico" value="@a.IdServico" />
+
+            <div class="passo">
+                <h2>Nova data e horário</h2>
+                <label for="data" class="form-label">Nova data</label>
+                <input id="data" name="Dados.Data" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" value="@dataAtual" class="form-control mb-3" required />
+                <span asp-validation-for="Dados.Data" class="form-text-erro"></span>
+
+                <p class="mb-2 fw-semibold" id="rotulo-horarios">Horários livres</p>
+                <div id="slots" class="slots" aria-labelledby="rotulo-horarios" aria-live="polite"
+                     data-nome="Dados.Horario" data-selecionado="@Model.Dados.Horario" data-ignorar="@a.Id"></div>
+                <span asp-validation-for="Dados.Horario" class="form-text-erro"></span>
+            </div>
+
+            <div class="resumo-agendamento mb-4"><strong>Novo horário:</strong> <span id="resumo">—</span></div>
+
+            <div class="d-flex justify-content-between gap-2 botoes-acoes">
+                <a asp-action="Meus" class="btn btn-outline-rosa">Voltar</a>
+                <button type="submit" class="btn btn-rosa">Confirmar novo horário</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/agendamento.js" asp-append-version="true"></script>
+}

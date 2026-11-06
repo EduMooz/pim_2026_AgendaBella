@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Web + Api",
+    "Projects": [
+      {
+        "Path": "AgendaBella.Web\\AgendaBella.Web.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "AgendaBella.Api\\AgendaBella.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      }
+    ]
+  }
+]

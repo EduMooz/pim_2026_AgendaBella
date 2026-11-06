@@ -1,0 +1,34 @@
+@model List<ClienteLinhaViewModel>
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<h1 class="titulo-admin h2 mb-4"><i class="fa-solid fa-users" aria-hidden="true"></i> Clientes e pontos</h1>
+
+<div class="card-tabela">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">Clientes cadastradas e saldo de pontos</caption>
+            <thead><tr><th scope="col">Nome</th><th scope="col">E-mail</th><th scope="col">Telefone</th><th scope="col">Pontos</th><th scope="col">Resgatar</th></tr></thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.Nome</td>
+                        <td>@c.Email</td>
+                        <td>@c.Telefone</td>
+                        <td class="fw-semibold">@c.Saldo</td>
+                        <td>
+                            <form asp-action="ResgatarPontos" method="post" class="d-flex gap-2 m-0">
+                                <input type="hidden" name="IdCliente" value="@c.Id" />
+                                <label for="pontos-@c.Id" class="visually-hidden">Pontos a resgatar de @c.Nome</label>
+                                <input id="pontos-@c.Id" type="number" name="Pontos" min="1" max="@c.Saldo" class="form-control form-control-sm" style="width:90px;padding:6px 10px" required />
+                                <button type="submit" class="btn btn-sm btn-outline-rosa" disabled="@(c.Saldo == 0)">Resgatar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

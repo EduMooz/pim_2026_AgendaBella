@@ -1,0 +1,17 @@
+@model ServicoSalvarDto
+@{
+    ViewData["Title"] = "Novo serviço";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card-login" style="max-width:560px">
+        <h1 class="h3 text-center mb-4">Novo serviço</h1>
+        <form asp-action="Criar" method="post">
+            <partial name="_Formulario" model="Model" />
+            <div class="d-flex gap-2 botoes-acoes">
+                <button type="submit" class="btn btn-rosa w-100">Salvar</button>
+                <a asp-action="Index" class="btn btn-outline-rosa w-100">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

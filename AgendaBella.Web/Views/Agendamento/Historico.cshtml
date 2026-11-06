@@ -1,0 +1,30 @@
+@model HistoricoViewModel
+@{
+    ViewData["Title"] = "Histórico do agendamento";
+}
+
+<div class="container-agendamentos" style="max-width:720px">
+    <h1 class="h3 mb-1">Histórico</h1>
+    <p class="mb-4">@Model.Agendamento.ServicoNome — @Formatos.Data(Model.Agendamento.Data) às @Model.Agendamento.Horario</p>
+
+    @* Estes eventos são gravados automaticamente pela trigger TR_Agendamento_Historico. *@
+    @if (Model.Eventos.Count == 0)
+    {
+        <p class="text-muted">Nenhum evento registrado.</p>
+    }
+    else
+    {
+        <ol class="linha-tempo">
+            @foreach (var e in Model.Eventos)
+            {
+                <li>
+                    <strong>@e.Evento</strong>
+                    <time datetime="@e.DataEvento.ToString("s")">@Formatos.DataHora(e.DataEvento)</time>
+                    <span>@e.Descricao</span>
+                </li>
+            }
+        </ol>
+    }
+
+    <a asp-action="Meus" class="btn btn-outline-rosa mt-3">Voltar</a>
+</div>

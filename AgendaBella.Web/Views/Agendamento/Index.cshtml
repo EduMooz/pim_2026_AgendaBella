@@ -1,0 +1,69 @@
+@model AgendamentoNovoViewModel
+@{
+    ViewData["Title"] = "Agendar horário";
+    var hoje = DateTime.Today.ToString("yyyy-MM-dd");
+    var dataAtual = Model.Dados.Data == default ? "" : Model.Dados.Data.ToString("yyyy-MM-dd");
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card-agendamento">
+        <h1 class="h3 text-center mb-4">Agende seu horário</h1>
+
+        <form asp-action="Criar" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="passo">
+                <h2>1. Escolha o serviço</h2>
+                <label for="servico" class="visually-hidden">Serviço</label>
+                <select id="servico" name="Dados.IdServico" class="form-select" required>
+                    <option value="">Selecione um serviço</option>
+                    @foreach (var s in Model.Servicos)
+                    {
+                        <option value="@s.Id" selected="@(s.Id == Model.Dados.IdServico)">@s.Nome — @Formatos.Moeda(s.Preco) (@s.Duracao min)</option>
+                    }
+                </select>
+                <span asp-validation-for="Dados.IdServico" class="form-text-erro"></span>
+            </div>
+
+            <div class="passo">
+                <h2>2. Escolha a data e o horário</h2>
+                <label for="data" class="form-label">Data</label>
+                <input id="data" name="Dados.Data" type="date" min="@hoje" value="@dataAtual" class="form-control mb-3" required />
+                <span asp-validation-for="Dados.Data" class="form-text-erro"></span>
+
+                <p class="mb-2 fw-semibold" id="rotulo-horarios">Horários livres</p>
+                <div id="slots" class="slots" aria-labelledby="rotulo-horarios" aria-live="polite"
+                     data-nome="Dados.Horario" data-selecionado="@Model.Dados.Horario"
+                     data-url-espera="@Url.Action("Index", "ListaEspera")"></div>
+                <span asp-validation-for="Dados.Horario" class="form-text-erro"></span>
+            </div>
+
+            <div class="passo">
+                <h2>3. Detalhes (opcional)</h2>
+                <div class="mb-3">
+                    <label asp-for="Dados.Observacao" class="form-label"></label>
+                    <textarea asp-for="Dados.Observacao" class="form-control" rows="3" placeholder="Ex.: quero um formato amendoado, cor nude."></textarea>
+                    <span asp-validation-for="Dados.Observacao" class="form-text-erro"></span>
+                </div>
+                <div class="mb-3">
+                    <label for="imagem" class="form-label">Foto de inspiração</label>
+                    <input id="imagem" type="file" name="imagem" class="form-control" accept="image/jpeg,image/png,image/webp" aria-describedby="dica-imagem" />
+                    <div id="dica-imagem" class="form-text">JPG, PNG ou WEBP, até 5 MB. Mostre à Erika o modelo que você quer.</div>
+                </div>
+            </div>
+
+            <div class="resumo-agendamento mb-4" aria-live="polite">
+                <strong>Resumo:</strong> <span id="resumo">—</span>
+            </div>
+
+            <div class="d-flex justify-content-between gap-2 botoes-acoes">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-rosa">Cancelar</a>
+                <button type="submit" class="btn btn-rosa">Confirmar agendamento</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/agendamento.js" asp-append-version="true"></script>
+}

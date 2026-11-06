@@ -1,0 +1,46 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Painel";
+}
+
+<h1 class="titulo-admin h2 mb-4"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Painel administrativo</h1>
+
+<div class="grade-resumo">
+    <div class="card-resumo"><h2 class="h6"><i class="fa-solid fa-users" aria-hidden="true"></i> Clientes ativas</h2><p>@Model.Resumo.ClientesAtivos</p></div>
+    <div class="card-resumo"><h2 class="h6"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i> Atendimentos hoje</h2><p>@Model.Resumo.AgendamentosHoje</p></div>
+    <div class="card-resumo"><h2 class="h6"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Aguardando confirmação</h2><p>@Model.Resumo.Pendentes</p></div>
+    <div class="card-resumo"><h2 class="h6"><i class="fa-solid fa-list-check" aria-hidden="true"></i> Lista de espera</h2><p>@Model.Resumo.ListaEsperaAguardando</p></div>
+</div>
+
+<h2 class="subtitulo-admin h4 mb-3">Próximos agendamentos</h2>
+
+@if (Model.Proximos.Count == 0)
+{
+    <p class="text-muted">Nenhum agendamento futuro.</p>
+}
+else
+{
+    <div class="card-tabela">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <caption class="visually-hidden">Próximos agendamentos</caption>
+                <thead>
+                    <tr><th scope="col">Cliente</th><th scope="col">Serviço</th><th scope="col">Data</th><th scope="col">Horário</th><th scope="col">Situação</th><th scope="col" class="text-center">Ações</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model.Proximos)
+                    {
+                        <tr>
+                            <td>@a.ClienteNome</td>
+                            <td>@a.ServicoNome</td>
+                            <td>@Formatos.Data(a.Data)</td>
+                            <td>@a.Horario</td>
+                            <td><span class="badge-status @Formatos.ClasseStatus(a.Status)">@Formatos.TextoStatus(a.Status)</span></td>
+                            <td class="text-center">@await Html.PartialAsync("_BotoesAgendamento", (a, "Dashboard", ""))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
